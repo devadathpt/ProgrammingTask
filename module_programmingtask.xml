@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_programmingtask" default="compile.module.programmingtask">
+  <dirname property="module.programmingtask.basedir" file="${ant.file.module_programmingtask}"/>
+  
+  <property name="module.jdk.home.programmingtask" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.programmingtask" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.programmingtask" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.programmingtask" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="programmingtask.output.dir" value="${module.programmingtask.basedir}/out/production/ProgrammingTask"/>
+  <property name="programmingtask.testoutput.dir" value="${module.programmingtask.basedir}/out/test/ProgrammingTask"/>
+  
+  <path id="programmingtask.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="programmingtask.module.production.classpath">
+    <path refid="${module.jdk.classpath.programmingtask}"/>
+  </path>
+  
+  <path id="programmingtask.runtime.production.module.classpath">
+    <pathelement location="${programmingtask.output.dir}"/>
+  </path>
+  
+  <path id="programmingtask.module.classpath">
+    <path refid="${module.jdk.classpath.programmingtask}"/>
+    <pathelement location="${programmingtask.output.dir}"/>
+  </path>
+  
+  <path id="programmingtask.runtime.module.classpath">
+    <pathelement location="${programmingtask.testoutput.dir}"/>
+    <pathelement location="${programmingtask.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.programmingtask">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.programmingtask">
+    <patternset refid="excluded.from.module.programmingtask"/>
+  </patternset>
+  
+  <path id="programmingtask.module.sourcepath">
+    <dirset dir="${module.programmingtask.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.programmingtask" depends="compile.module.programmingtask.production,compile.module.programmingtask.tests" description="Compile module ProgrammingTask"/>
+  
+  <target name="compile.module.programmingtask.production" depends="register.custom.compilers" description="Compile module ProgrammingTask; production classes">
+    <mkdir dir="${programmingtask.output.dir}"/>
+    <javac2 destdir="${programmingtask.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.programmingtask}/javac">
+      <compilerarg line="${compiler.args.programmingtask}"/>
+      <bootclasspath refid="programmingtask.module.bootclasspath"/>
+      <classpath refid="programmingtask.module.production.classpath"/>
+      <src refid="programmingtask.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.programmingtask"/>
+    </javac2>
+    
+    <copy todir="${programmingtask.output.dir}">
+      <fileset dir="${module.programmingtask.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.programmingtask.tests" depends="register.custom.compilers,compile.module.programmingtask.production" description="compile module ProgrammingTask; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.programmingtask" description="cleanup module">
+    <delete dir="${programmingtask.output.dir}"/>
+    <delete dir="${programmingtask.testoutput.dir}"/>
+  </target>
+</project>
